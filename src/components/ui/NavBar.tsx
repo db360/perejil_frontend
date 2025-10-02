@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 export default function NavBar() {
     return (
-        <div>
+        <div className="z-50">
 
         <ul className="flex flex-row space-x-4">
           <li>

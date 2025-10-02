@@ -67,6 +67,7 @@ const MenuButton = ({
       preserveAspectRatio="none"
       width={width}
       height={height}
+      className={"cursor-pointer"}
       {...props}
     >
       <motion.line
