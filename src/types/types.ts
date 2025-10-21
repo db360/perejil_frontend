@@ -1,25 +1,31 @@
 export interface WordPressPage {
   id: number;
-  date: string;
-  date_gmt: string;
-  guid: { rendered: string };
-  modified: string;
-  modified_gmt: string;
   slug: string;
-  status: string;
-  type: string;
-  link: string;
   title: { rendered: string };
-  content: { rendered: string; protected: boolean };
-  excerpt: { rendered: string; protected: boolean };
-  author: number;
+  content: { rendered: string };
+  excerpt?: { rendered: string };
   featured_media: number;
-  parent: number;
-  menu_order: number;
-  comment_status: string;
-  ping_status: string;
-  template: string;
-  meta: Record<string, unknown>;
-  class_list: string[];
-  _links: Record<string, unknown>;
+  meta?: Record<string, unknown>;
+  video_destacado?: {
+    id: number;
+    url: string;
+    mime_type: string;
+  };
+  yoast_head_json?: {
+    title?: string;
+    og_description?: string;
+    og_image?: Array<{ url: string }>;
+    og_title?: string;
+    canonical?: string;
+    schema?: unknown;
+  };
+  _embedded?: {
+    "wp:featuredmedia"?: Array<{
+      id: number;
+      source_url: string;
+      media_details?: {
+        sizes?: Record<string, { source_url: string }>;
+      };
+    }>;
+  };
 }
