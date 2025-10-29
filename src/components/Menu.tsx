@@ -5,6 +5,7 @@ import LoadingAnim from "./ui/LoadingAnim";
 import { motion } from 'framer-motion';
 import MenuModal from "./ui/MenuModal";
 import type { Product } from "../api/services/menuService";
+import { useSEO } from "../hooks/useSeo";
 
 export default function Menu() {
   const { completeMenu, loading, error } = useCompleteMenu();
@@ -43,6 +44,14 @@ export default function Menu() {
     }
   };
 
+    useSEO({
+      title: 'BAR EL PEREJIL - Menú',
+      description: 'Explora el delicioso menú de Bar El Perejil, con platos tradicionales y sabores auténticos.',
+      ogTitle: 'Bar El Perejil - Menú',
+      ogDescription: 'Explora el delicioso menú de Bar El Perejil, con platos tradicionales y sabores auténticos.',
+      ogImage: completeMenu[0]?.sections[0]?.products[0]?.imageUrl || '',
+    });
+
   return (
     <div className="p-4 max-w-10/12 mx-auto">
       <LoadingAnim loading={loading} />
@@ -61,16 +70,16 @@ export default function Menu() {
         variants={containerVariants}
         initial="hidden"
         animate={loading ? "hidden" : "visible"}
-        className="relative flex flex-col bg-clip-border rounded-xl text-gray-700 shadow-md border border-blue-gray-100 mt-4 p-6 h-full w-full bg-perejil-500 backdrop-filter backdrop-blur-sm bg-opacity-20 border-gray-100"
+        className="relative flex flex-col bg-clip-border rounded-xl text-gray-700 shadow-md border border-blue-gray-100 mt-4 p-6 h-full w-full bg-perejil-400 backdrop-filter backdrop-blur-sm bg-opacity-20 border-gray-100"
         // 🎯 Añadir will-change para optimizar rendering
         style={{ willChange: 'opacity' }}
       >
         {completeMenu[0]?.sections.map((sectionData) => (
           <div className="mt-4 p-6" key={sectionData.section.id}>
-            <h2 className="font-bold text-perejil-100 text-center text-2xl">
+            <h2 className="font-bold text-white text-center text-2xl">
               {sectionData.section.name}
             </h2>
-            <div className="flex flex-row content-between align-middle justify-around mt-4 p-6 border border-perejil-100">
+            <div className="flex flex-row content-between align-middle justify-around mt-4 p-6 ">
               {sectionData.products.map((product) => (
                 <motion.div
                   onClick={() => handleProductClick(product)}
@@ -84,7 +93,7 @@ export default function Menu() {
                     WebkitBackfaceVisibility: 'hidden'
                   }}
                 >
-                  <h3 className="text-perejil-100 text-lg font-semibold">
+                  <h3 className="text-lg font-semibold text-white">
                     {decodeHtmlEntities(product.title.rendered)}
                   </h3>
                   <img

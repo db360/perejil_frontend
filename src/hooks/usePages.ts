@@ -11,6 +11,7 @@ interface PageWithExtras extends Omit<WordPressPage, 'content' | 'excerpt' | '_e
   seoTitle?: string;
   seoDescription?: string;
   ogImage?: string;
+  content?: string;
 }
 
 const pageCache: Record<string, PageWithExtras | null> = {};
@@ -43,6 +44,7 @@ export function usePagesByslug(slug: string) {
         let mediaUrl: string | undefined = undefined;
         let galleryImages: GalleryImage[] = [];
         let textContent: string | undefined = undefined;
+        let content: string | undefined = undefined;
 
         // 🎬 PRIORIDAD 1: Video destacado personalizado (campo ACF/custom)
         if (page.video_destacado?.url) {
@@ -99,6 +101,7 @@ export function usePagesByslug(slug: string) {
         if (page.content?.rendered) {
           galleryImages = extractGalleryImages(page.content.rendered);
           textContent = extractTextContent(page.content.rendered);
+          content = page.content.rendered;
         }
 
         // Extraer datos SEO de Yoast
@@ -118,6 +121,7 @@ export function usePagesByslug(slug: string) {
           mediaUrl,
           galleryImages,
           textContent,
+          content,
           seoTitle,
           seoDescription,
           ogImage,

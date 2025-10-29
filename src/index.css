@@ -12,43 +12,6 @@
   --color-perejil-900: #0E3D13;
 }
 
-/* Optimizaciones específicas para Firefox - MÁS SELECTIVAS */
-@-moz-document url-prefix() {
-  /* ❌ QUITAR la optimización global de * */
-  /* Solo aplicar a elementos con animaciones */
-  .motion-element,
-  [data-framer-motion],
-  .transform-gpu {
-    transform: translateZ(0);
-    -moz-osx-font-smoothing: grayscale;
-    will-change: transform;
-  }
-
-  /* Mejorar rendering de backdrop-filter SOLO en el menú */
-  .menu-backdrop-filter {
-    -moz-backdrop-filter: blur(4px);
-  }
-}
-
-/* Optimizaciones generales - más específicas */
-.transform-gpu {
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* ✅ Asegurar que los modales ocupen toda la pantalla */
-.modal-backdrop {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 9999 !important;
-}
 
 html {
   box-sizing: border-box;
@@ -62,4 +25,72 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-perejil-100);
   color: var(--color-perejil-900);
+}
+
+/* Alto contraste */
+.high-contrast {
+  filter: contrast(150%) brightness(110%);
+}
+
+.high-contrast * {
+  background-color: var(--bg-high-contrast, inherit) !important;
+  color: var(--text-high-contrast, inherit) !important;
+  border-color: var(--border-high-contrast, inherit) !important;
+}
+
+.high-contrast {
+  --bg-high-contrast: #000000;
+  --text-high-contrast: #ffffff;
+  --border-high-contrast: #ffffff;
+}
+
+.high-contrast .bg-white,
+.high-contrast .bg-gray-50,
+.high-contrast .bg-gray-100 {
+  background-color: #000000 !important;
+}
+
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800,
+.high-contrast .text-gray-900 {
+  color: #ffffff !important;
+}
+
+.high-contrast .bg-perejil-600,
+.high-contrast .bg-perejil-700 {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Tamaños de fuente */
+.font-size-normal {
+  font-size: 1rem;
+}
+
+.font-size-large {
+  font-size: 1.125rem;
+}
+
+.font-size-xlarge {
+  font-size: 1.25rem;
+}
+
+/* Variables CSS para el escalado dinámico */
+:root {
+  --font-scale: 1;
+}
+
+.font-size-large {
+  --font-scale: 1.125;
+}
+
+.font-size-xlarge {
+  --font-scale: 1.25;
+}
+
+/* Aplicar escalado a elementos de texto */
+.font-size-large *,
+.font-size-xlarge * {
+  font-size: calc(1rem * var(--font-scale)) !important;
 }

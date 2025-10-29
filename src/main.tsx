@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout.tsx';
 import Home from './components/Home.tsx';
 import Menu from './components/Menu.tsx';
 import About from './components/About.tsx';
+import AvisoLegal from './components/AvisoLegal.tsx';
 
 
 // Define todas tus rutas
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: 'about',
         element: <About />,
       },
+      {
+        path: 'aviso-legal',
+        element: <AvisoLegal />,
+      }
     ],
   },
 ]);
