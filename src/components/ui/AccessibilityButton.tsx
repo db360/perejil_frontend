@@ -135,6 +135,7 @@ export default function AccessibilityButton() {
                   <label className="text-sm font-medium text-gray-700">
                     Alto Contraste
                   </label>
+                  
                   <button
                     type="button"
                     onClick={toggleContrast}

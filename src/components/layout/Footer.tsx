@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import AccessibilityButton from "../ui/AccessibilityButton";
 
 export default function Footer() {
+  // @ts-expect-error - Variable será usada más adelante
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAtBottom, setIsAtBottom] = useState(false);
 
   // 🎯 Detectar scroll global de la ventana
@@ -62,7 +64,7 @@ export default function Footer() {
             </Link>
           </li>
           <li>
-            <Link to="#" className="hover:underline">
+            <Link to="/contacto" className="hover:underline">
               Contacto
             </Link>
           </li>

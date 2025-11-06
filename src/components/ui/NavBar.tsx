@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 export default function NavBar() {
     return (
         <div className="z-50 mr-2">
-        <ul className="flex flex-row space-x-4">
+        <ul className="flex flex-row space-x-4 gap-2">
           <li>
             <NavLink
               to="/"
@@ -39,6 +39,18 @@ export default function NavBar() {
               }
             >
               About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/contacto"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-perejil-100 underline"
+                  : "hover:text-perejil-100 transition-colors"
+              }
+            >
+              Contacto
             </NavLink>
           </li>
         </ul>

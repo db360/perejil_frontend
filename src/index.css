@@ -12,6 +12,16 @@
   --color-perejil-900: #0E3D13;
 }
 
+/* Configuración de dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+.dark {
+  color-scheme: dark;
+}
 
 html {
   box-sizing: border-box;

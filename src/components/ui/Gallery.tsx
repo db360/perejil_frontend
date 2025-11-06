@@ -47,7 +47,7 @@ export default function Gallery({
   };
 
   return (
-    <div className="relative w-full h-[500px] flex items-center justify-center bg-perejil-200 overflow-hidden z-50">
+    <div className="relative w-full h-[500px] flex items-center justify-center overflow-hidden z-50 mb-35">
       {/* Contenedor de la imagen con AnimatePresence */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.img
@@ -66,6 +66,7 @@ export default function Gallery({
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={1}
+          // @ts-expect-error - Variable será usada más adelante
           onDragEnd={(e, { offset, velocity }) => {
             const swipe = swipePower(offset.x, velocity.x);
 
@@ -75,7 +76,7 @@ export default function Gallery({
               paginate(-1);
             }
           }}
-          className="absolute w-full h-full object-contain rounded-lg "
+          className="absolute w-full h-full object-cover rounded-2xl p-2"
         />
       </AnimatePresence>
 
@@ -83,7 +84,7 @@ export default function Gallery({
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-black rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer select-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-black rounded-full w-10 h-10 flex items-center justify-center shadow-lg cursor-pointer select-none"
         onClick={() => paginate(-1)}
         aria-label="Imagen anterior"
       >
@@ -106,7 +107,7 @@ export default function Gallery({
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-black rounded-full w-12 h-12 flex items-center justify-center shadow-lg cursor-pointer select-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-black rounded-full w-10 h-10 flex items-center justify-center shadow-lg cursor-pointer select-none"
         onClick={() => paginate(1)}
         aria-label="Imagen siguiente"
       >

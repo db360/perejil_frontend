@@ -2,21 +2,24 @@ import { AnimatePresence, motion } from "framer-motion";
 import HamburguerMenu from "../ui/HamburguerMenu";
 import NavBar from "../ui/NavBar";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const isMdUp = useMediaQuery("(min-width: 768px)");
 
   return (
-    <div className="sticky top-0 bg-perejil-400 p-2 text-white font-bold flex flex-row justify-between z-50">
+    <div className="sticky top-0 bg-perejil-400 p-2 text-white font-bold flex flex-row justify-between items-center z-50">
       <div>
-        <a href="/">
+        <Link to="/">
           <img
             className="w-50"
             src="/img/logoPerejil.png"
             alt="Logo Bar El Perejil"
           />
-        </a>
+        </Link>
       </div>
+
+      <div className="flex items-center gap-4">
       <AnimatePresence mode="wait">
         {isMdUp ? (
           <motion.div
@@ -42,6 +45,7 @@ export default function Header() {
         )}
 
       </AnimatePresence>
+      </div>
 
     </div>
 

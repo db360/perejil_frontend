@@ -3,62 +3,50 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import LoadingAnim from "./ui/LoadingAnim";
 import { useSEO } from "../hooks/useSeo";
-// import Gallery from "./ui/Gallery";
 import { stripHtmlTags } from "../lib/utils";
+import Gallery from "./ui/Gallery";
 
 export default function Home() {
-  // 1️⃣ Obtener datos de la página desde WordPress
   const { data, loading, error } = usePagesByslug("index");
-
-  console.log(data)
-  // 2️⃣ Referencias para manipular el DOM
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 3️⃣ Configurar metadatos SEO dinámicamente
+  const videoHero = data?.mediaUrl;
+
+  // 🚀 SEO COMPLETO CON DATOS DE YOAST
   useSEO({
     title: data?.seoTitle,
     description: data?.seoDescription,
-    ogTitle: data?.seoTitle,
-    ogDescription: data?.seoDescription,
-    ogImage: data?.ogImage,
+    yoastData: data?.yoast_head_json,
+    featuredImage: data?.mediaUrl,
+    pageType: 'website'
   });
-  // // 4️⃣ Usar useScroll de Framer Motion para trackear el progreso del scroll
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
-  // Panel izquierdo: de -50% a 0% (entra desde la izquierda)
+
+  // 🎬 Transformar el progreso - el video DESAPARECE hacia el final
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0]);
+
   const leftPanel = useTransform(scrollYProgress, [0, 1], ["-100%", "0%"]);
-  // Panel derecho: de 100% a 0% (entra desde la derecha)
   const rightPanel = useTransform(scrollYProgress, [0, 1], ["100%", "0%"]);
-
-
-  // // 5️⃣ Detectar el tipo MIME del video (webm, mp4, etc.)
-  // const videoType = data?.video_destacado?.mime_type || "video/webm";
 
   return (
     <>
       <LoadingAnim loading={loading} />
-
       {error && <p className="text-red-500 p-4">Error: {error}</p>}
 
-
       <div ref={containerRef} className="relative z-0">
-
-
-    {/* Panel izquierdo */}
         <motion.div
           style={{ x: leftPanel }}
-          className="fixed top-0 left-0 w-1/2 h-screen bg-[url('/img/background.png')] bg-cover bg-center bg-repeat z-0 opacity-30"
+          className="fixed top-0 left-0 w-1/2 h-screen bg-[url('/img/background.png')] bg-cover bg-center bg-repeat z-0 opacity-40"
         />
-
-        {/* Panel derecho */}
         <motion.div
           style={{ x: rightPanel }}
-          className="fixed top-0 right-0 w-1/2 h-screen  bg-[url('/img/background.png')] bg-cover bg-center bg-repeat z-0 opacity-30"
+          className="fixed top-0 right-0 w-1/2 h-screen bg-[url('/img/background.png')] bg-cover bg-center bg-repeat z-0 opacity-40"
         />
 
-        {/* Contenido */}
         <div className="relative h-[250vh] flex flex-col items-center justify-start pt-32 text-center z-10">
           <div className="top-20">
             <motion.h1
@@ -69,7 +57,6 @@ export default function Home() {
             >
               {stripHtmlTags(data?.title?.rendered || "")}
             </motion.h1>
-
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: loading ? 0 : 1, y: loading ? 50 : 0 }}
@@ -80,17 +67,21 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
-        {/* <VideoHero
-          mediaUrl={data?.mediaUrl}
-          videoType={videoType}
-          scrollYProgress={scrollYProgress}
-          loading={loading}
-          title={stripHtmlTags(data?.title?.rendered || "")}
-          textContent={data?.textContent}
-        /> */}
 
-        {/* <Gallery images={data?.galleryImages} /> */}
+        {videoHero && (
+          <motion.video
+            style={{ opacity: videoOpacity }} // Usar style inline para valores dinámicos
+            className="fixed top-0 left-0 w-full h-full object-cover z-[-1]"
+            src={videoHero}
+            autoPlay
+            loop
+            muted
+          />
+        )}
       </div>
+      <section>
+        <Gallery images={data?.galleryImages}/>
+      </section>
     </>
   );
 }

@@ -14,8 +14,11 @@ export default function VideoHero({
   mediaUrl,
   videoType = "video/webm",
   scrollYProgress,
+  // @ts-expect-error - Variable será usada más adelante
   loading,
+  // @ts-expect-error - Variable será usada más adelante
   title,
+  // @ts-expect-error - Variable será usada más adelante
   textContent
 }: VideoHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);

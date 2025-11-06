@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface YoastSEOData {
   title?: string;
@@ -17,7 +17,6 @@ interface YoastSEOData {
 }
 
 interface SEOProps {
-  // Datos directos (prioridad alta)
   title?: string;
   description?: string;
   ogTitle?: string;
@@ -25,14 +24,15 @@ interface SEOProps {
   ogImage?: string;
   canonical?: string;
   schema?: object;
-
-  // Datos de Yoast (se extraen automáticamente)
   yoastData?: YoastSEOData;
-
-  // Datos específicos de la página/producto
   featuredImage?: string;
   pageType?: 'website' | 'article' | 'product' | 'restaurant';
 }
+
+// 📋 Registro de metadatos creados para limpieza
+const createdMetaTags = new Set<HTMLElement>();
+let createdCanonicalLink: HTMLLinkElement | null = null;
+let createdSchemaScript: HTMLScriptElement | null = null;
 
 export function useSEO({
   title,
@@ -46,111 +46,101 @@ export function useSEO({
   featuredImage,
   pageType = 'website'
 }: SEOProps) {
-  useEffect(() => {
-    // 🎯 SISTEMA DE PRIORIDADES INTELIGENTE
+  const isInitialized = useRef(false);
+  const lastConfigRef = useRef<string>('');
 
-    // 1. Title: Manual > Yoast og_title > Yoast title > Fallback
+  useEffect(() => {
+    // 🎯 Crear un hash de la configuración actual para detectar cambios
+    const currentConfig = JSON.stringify({
+      title, description, ogTitle, ogDescription, ogImage,
+      canonical, schema, yoastData, featuredImage, pageType
+    });
+
+    // Si la configuración no ha cambiado, no hacer nada
+    if (lastConfigRef.current === currentConfig && isInitialized.current) {
+      return;
+    }
+
+    // 🧹 LIMPIEZA: Eliminar metadatos anteriores solo si es necesario
+    cleanupPreviousMetadata();
+
+    // 🎯 SISTEMA DE PRIORIDADES INTELIGENTE
     const finalTitle = title ||
                       yoastData?.og_title ||
                       yoastData?.title ||
                       'Bar El Perejil - Restaurante Tradicional';
 
-    // 2. Description: Manual > Yoast og_description > Yoast meta_description > Fallback
     const finalDescription = description ||
                            yoastData?.og_description ||
                            yoastData?.meta_description ||
                            'Disfruta de la auténtica cocina tradicional en Bar El Perejil. Menú casero y ambiente acogedor.';
 
-    // 3. OG Image: Manual > Yoast og_image > Featured Image > Fallback
     const finalOgImage = ogImage ||
                         yoastData?.og_image?.[0]?.url ||
                         featuredImage ||
                         '/img/logoPerejil.png';
 
-    // 4. OG Title: Manual > Yoast og_title > Final Title
     const finalOgTitle = ogTitle || yoastData?.og_title || finalTitle;
-
-    // 5. OG Description: Manual > Yoast og_description > Final Description
     const finalOgDescription = ogDescription || yoastData?.og_description || finalDescription;
-
-    // 6. Canonical: Manual > Yoast canonical > Current URL
     const finalCanonical = canonical || yoastData?.canonical || window.location.href;
 
     // 📝 Aplicar metadatos
     document.title = finalTitle;
 
-    const setMetaTag = (selector: string, content: string) => {
-      if (!content) return; // No crear tags vacíos
+    // 🏷️ Crear metadatos sin duplicados
+    const metaConfigs = [
+      { selector: 'meta[name="description"]', content: finalDescription },
+      { selector: 'meta[name="keywords"]', content: 'restaurante, bar, comida tradicional, menú casero, Bar El Perejil, kit digital' },
+      { selector: 'meta[name="author"]', content: 'Bar El Perejil' },
+      { selector: 'meta[name="robots"]', content: 'index, follow' },
 
-      let meta = document.querySelector(selector) as HTMLMetaElement;
-      if (!meta) {
-        meta = document.createElement('meta');
-        const [attr, value] = selector.replace(/[[\]]/g, '').split('=');
-        meta.setAttribute(attr, value.replace(/"/g, ''));
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute('content', content);
-    };
+      // Open Graph
+      { selector: 'meta[property="og:title"]', content: finalOgTitle },
+      { selector: 'meta[property="og:description"]', content: finalOgDescription },
+      { selector: 'meta[property="og:type"]', content: yoastData?.og_type || pageType },
+      { selector: 'meta[property="og:locale"]', content: yoastData?.og_locale || 'es_ES' },
+      { selector: 'meta[property="og:url"]', content: finalCanonical },
+      { selector: 'meta[property="og:site_name"]', content: 'Bar El Perejil' },
+      { selector: 'meta[property="og:image"]', content: finalOgImage },
+      { selector: 'meta[property="og:image:alt"]', content: finalOgTitle },
 
-    // Meta tags básicos
-    setMetaTag('meta[name="description"]', finalDescription);
-    setMetaTag('meta[name="keywords"]', 'restaurante, bar, comida tradicional, menú casero, Bar El Perejil, kit digital');
-    setMetaTag('meta[name="author"]', 'Bar El Perejil');
-    setMetaTag('meta[name="robots"]', 'index, follow');
+      // Twitter Cards
+      { selector: 'meta[name="twitter:card"]', content: yoastData?.twitter_card || 'summary_large_image' },
+      { selector: 'meta[name="twitter:title"]', content: yoastData?.twitter_title || finalOgTitle },
+      { selector: 'meta[name="twitter:description"]', content: yoastData?.twitter_description || finalOgDescription },
+      { selector: 'meta[name="twitter:image"]', content: yoastData?.twitter_image || finalOgImage },
+    ];
 
-    // Open Graph
-    setMetaTag('meta[property="og:title"]', finalOgTitle);
-    setMetaTag('meta[property="og:description"]', finalOgDescription);
-    setMetaTag('meta[property="og:type"]', yoastData?.og_type || pageType);
-    setMetaTag('meta[property="og:locale"]', yoastData?.og_locale || 'es_ES');
-    setMetaTag('meta[property="og:url"]', finalCanonical);
-    setMetaTag('meta[property="og:site_name"]', 'Bar El Perejil');
-
-    if (finalOgImage) {
-      setMetaTag('meta[property="og:image"]', finalOgImage);
-      setMetaTag('meta[property="og:image:alt"]', finalOgTitle);
-
-      // Dimensiones de imagen si están disponibles
-      if (yoastData?.og_image?.[0]?.width) {
-        setMetaTag('meta[property="og:image:width"]', yoastData.og_image[0].width.toString());
-      }
-      if (yoastData?.og_image?.[0]?.height) {
-        setMetaTag('meta[property="og:image:height"]', yoastData.og_image[0].height.toString());
-      }
+    // Añadir dimensiones de imagen si están disponibles
+    if (yoastData?.og_image?.[0]?.width) {
+      metaConfigs.push({
+        selector: 'meta[property="og:image:width"]',
+        content: yoastData.og_image[0].width.toString()
+      });
+    }
+    if (yoastData?.og_image?.[0]?.height) {
+      metaConfigs.push({
+        selector: 'meta[property="og:image:height"]',
+        content: yoastData.og_image[0].height.toString()
+      });
     }
 
-    // Twitter Cards
-    setMetaTag('meta[name="twitter:card"]', yoastData?.twitter_card || 'summary_large_image');
-    setMetaTag('meta[name="twitter:title"]', yoastData?.twitter_title || finalOgTitle);
-    setMetaTag('meta[name="twitter:description"]', yoastData?.twitter_description || finalOgDescription);
-    if (yoastData?.twitter_image || finalOgImage) {
-      setMetaTag('meta[name="twitter:image"]', yoastData?.twitter_image || finalOgImage);
-    }
+    // Crear metadatos de forma segura
+    metaConfigs.forEach(config => {
+      if (config.content) {
+        createOrUpdateMetaTag(config.selector, config.content);
+      }
+    });
 
-    // Canonical URL
-    let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.rel = 'canonical';
-      document.head.appendChild(canonicalLink);
-    }
-    canonicalLink.href = finalCanonical;
+    // 🔗 Canonical URL
+    createOrUpdateCanonical(finalCanonical);
 
-    // Schema.org JSON-LD (priorizar Yoast schema)
+    // 📊 Schema.org JSON-LD
     const finalSchema = schema || yoastData?.schema;
     if (finalSchema) {
-      let schemaScript = document.querySelector('#schema-ld') as HTMLScriptElement | null;
-      if (!schemaScript) {
-        schemaScript = document.createElement('script');
-        schemaScript.id = 'schema-ld';
-        schemaScript.type = 'application/ld+json';
-        document.head.appendChild(schemaScript);
-      }
-      schemaScript.textContent = JSON.stringify(finalSchema);
-    }
-
-    // 🍽️ Schema específico para restaurante si no hay otro
-    if (!finalSchema && pageType === 'restaurant') {
+      createOrUpdateSchema(finalSchema);
+    } else if (pageType === 'restaurant') {
+      // Schema específico para restaurante
       const restaurantSchema = {
         "@context": "https://schema.org",
         "@type": "Restaurant",
@@ -174,16 +164,90 @@ export function useSEO({
           "Su 12:00-22:00"
         ]
       };
-
-      let schemaScript = document.querySelector('#schema-ld') as HTMLScriptElement | null;
-      if (!schemaScript) {
-        schemaScript = document.createElement('script');
-        schemaScript.id = 'schema-ld';
-        schemaScript.type = 'application/ld+json';
-        document.head.appendChild(schemaScript);
-      }
-      schemaScript.textContent = JSON.stringify(restaurantSchema);
+      createOrUpdateSchema(restaurantSchema);
     }
 
+    // Actualizar referencias
+    lastConfigRef.current = currentConfig;
+    isInitialized.current = true;
+
   }, [title, description, ogTitle, ogDescription, ogImage, canonical, schema, yoastData, featuredImage, pageType]);
+
+  // 🧹 Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      cleanupPreviousMetadata();
+    };
+  }, []);
+}
+
+// 🛠️ Funciones helper
+
+function createOrUpdateMetaTag(selector: string, content: string) {
+  let meta = document.querySelector(selector) as HTMLMetaElement;
+
+  if (!meta) {
+    meta = document.createElement('meta');
+    const [attr, value] = selector.replace(/[[\]]/g, '').split('=');
+    meta.setAttribute(attr, value.replace(/"/g, ''));
+    document.head.appendChild(meta);
+    createdMetaTags.add(meta);
+  }
+
+  meta.setAttribute('content', content);
+}
+
+function createOrUpdateCanonical(href: string) {
+  // Limpiar canonical anterior si existe
+  if (createdCanonicalLink) {
+    createdCanonicalLink.remove();
+  }
+
+  let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link');
+    canonicalLink.rel = 'canonical';
+    document.head.appendChild(canonicalLink);
+    createdCanonicalLink = canonicalLink;
+  }
+  canonicalLink.href = href;
+}
+
+function createOrUpdateSchema(schemaData: unknown) {
+  // Limpiar schema anterior si existe
+  if (createdSchemaScript) {
+    createdSchemaScript.remove();
+  }
+
+  let schemaScript = document.querySelector('#schema-ld') as HTMLScriptElement;
+  if (!schemaScript) {
+    schemaScript = document.createElement('script');
+    schemaScript.id = 'schema-ld';
+    schemaScript.type = 'application/ld+json';
+    document.head.appendChild(schemaScript);
+    createdSchemaScript = schemaScript;
+  }
+  schemaScript.textContent = JSON.stringify(schemaData);
+}
+
+function cleanupPreviousMetadata() {
+  // Limpiar meta tags creados
+  createdMetaTags.forEach(meta => {
+    if (meta.parentNode) {
+      meta.parentNode.removeChild(meta);
+    }
+  });
+  createdMetaTags.clear();
+
+  // Limpiar canonical si fue creado por nosotros
+  if (createdCanonicalLink && createdCanonicalLink.parentNode) {
+    createdCanonicalLink.parentNode.removeChild(createdCanonicalLink);
+    createdCanonicalLink = null;
+  }
+
+  // Limpiar schema si fue creado por nosotros
+  if (createdSchemaScript && createdSchemaScript.parentNode) {
+    createdSchemaScript.parentNode.removeChild(createdSchemaScript);
+    createdSchemaScript = null;
+  }
 }
