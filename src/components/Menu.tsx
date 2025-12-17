@@ -1,26 +1,13 @@
-import { useState } from "react";
 import { useCompleteMenu } from "../hooks/useMenu";
-import { decodeHtmlEntities } from "../lib/utils";
 import LoadingAnim from "./ui/LoadingAnim";
 import { motion } from 'framer-motion';
-import MenuModal from "./ui/MenuModal";
-import type { Product } from "../api/services/menuService";
 import { useSEO } from "../hooks/useSeo";
+import MenuCard from "./ui/MenuCard";
 
 export default function Menu() {
   const { completeMenu, loading, error } = useCompleteMenu();
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  console.log(completeMenu[0])
 
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedProduct(null);
-  };
 
   // 🚀 Optimizaciones para animaciones más fluidas
   const containerVariants = {
@@ -34,16 +21,6 @@ export default function Menu() {
     }
   };
 
-  const productVariants = {
-    tap: {
-      scale: 0.95,
-      transition: {
-        type: "spring" as const, // Cambiar de spring a tween para mejor performance
-        duration: 0.1
-      }
-    }
-  };
-
     useSEO({
       title: 'BAR EL PEREJIL - Menú',
       description: 'Explora el delicioso menú de Bar El Perejil, con platos tradicionales y sabores auténticos.',
@@ -53,7 +30,7 @@ export default function Menu() {
     });
 
   return (
-    <div className="p-4 max-w-10/12 mx-auto">
+    <div className="p-4 max-w-10/12 mx-auto pb-72">
       <LoadingAnim loading={loading} />
       {error && <p>Error: {error}</p>}
 
@@ -61,7 +38,7 @@ export default function Menu() {
         variants={containerVariants}
         initial="hidden"
         animate={loading ? "hidden" : "visible"}
-        className="text-3xl bold text-center font-bold"
+        className="text-3xl bold text-center font-bold dark:text-white mt-10 mb-16"
       >
         Nuestro Menú
       </motion.h1>
@@ -70,7 +47,7 @@ export default function Menu() {
         variants={containerVariants}
         initial="hidden"
         animate={loading ? "hidden" : "visible"}
-        className="relative flex flex-col bg-clip-border rounded-xl text-gray-700 shadow-md border border-blue-gray-100 mt-4 p-6 h-full w-full bg-perejil-400 backdrop-filter backdrop-blur-sm bg-opacity-20 border-gray-100"
+        className="relative flex flex-col bg-clip-border rounded-xl text-gray-700 shadow-md  mt-4 p-6 h-full w-full bg-perejil-400 backdrop-filter backdrop-blur-sm bg-opacity-20 border-gray-100"
         // 🎯 Añadir will-change para optimizar rendering
         style={{ willChange: 'opacity' }}
       >
@@ -81,41 +58,14 @@ export default function Menu() {
             </h2>
             <div className="flex flex-row content-between align-middle justify-around mt-4 p-6 ">
               {sectionData.products.map((product) => (
-                <motion.div
-                  onClick={() => handleProductClick(product)}
-                  whileTap={productVariants.tap}
-                  key={product.id}
-                  className="border p-6 hover:cursor-pointer transform-gpu" // 🚀 transform-gpu para hardware acceleration
-                  // 🎯 Optimizaciones específicas para Firefox
-                  style={{
-                    willChange: 'transform',
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden'
-                  }}
-                >
-                  <h3 className="text-lg font-semibold text-white">
-                    {decodeHtmlEntities(product.title.rendered)}
-                  </h3>
-                  <img
-                    className="w-42 h-32 object-cover rounded-2xl mt-2"
-                    src={product.imageUrl}
-                    alt={product.title.rendered}
-                    // 🖼️ Optimizar carga de imágenes
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </motion.div>
+                <MenuCard product={product} />
               ))}
             </div>
           </div>
         ))}
       </motion.div>
 
-      <MenuModal
-        showModal={showModal}
-        selectedProduct={selectedProduct}
-        onClose={handleCloseModal}
-      />
+
     </div>
   );
 }

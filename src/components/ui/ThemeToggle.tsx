@@ -9,7 +9,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-200"
+      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-colors duration-200 hover:cursor-pointer"
       aria-label="Toggle dark mode"
     >
       {isDark ? (

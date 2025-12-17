@@ -32,7 +32,10 @@ export interface Product {
   template?: string;
   secciones: number[];
   ingredientes?: string;
-  alergenos?: number[];
+  alergenos?: Array<{
+    numero: number;
+    nombre: string;
+  }>;
   precio?: number;
   meta?: {
     precio?: string;

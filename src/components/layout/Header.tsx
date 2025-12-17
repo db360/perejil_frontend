@@ -3,12 +3,13 @@ import HamburguerMenu from "../ui/HamburguerMenu";
 import NavBar from "../ui/NavBar";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { Link } from "react-router-dom";
+import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Header() {
   const isMdUp = useMediaQuery("(min-width: 768px)");
 
   return (
-    <div className="sticky top-0 bg-perejil-400 p-2 text-white font-bold flex flex-row justify-between items-center z-50">
+    <div className="sticky top-0 bg-perejil-500 dark:bg-perejil-700 p-2 text-white font-bold flex flex-row justify-between items-center z-50">
       <div>
         <Link to="/">
           <img
@@ -45,6 +46,8 @@ export default function Header() {
         )}
 
       </AnimatePresence>
+      <ThemeToggle />
+
       </div>
 
     </div>

@@ -9,7 +9,7 @@ export default function NavBar() {
               to="/"
               className={({ isActive }) =>
                 isActive
-                  ? "text-perejil-100 underline"
+                  ? "text-black dark:text-white underline"
                   : "hover:text-perejil-100 transition-colors"
               }
               end
@@ -22,7 +22,7 @@ export default function NavBar() {
               to="/menu"
               className={({ isActive }) =>
                 isActive
-                  ? "text-perejil-100 underline"
+                  ? "text-black dark:text-white underline"
                   : "hover:text-perejil-100 transition-colors"
               }
             >
@@ -34,7 +34,7 @@ export default function NavBar() {
               to="/about"
               className={({ isActive }) =>
                 isActive
-                  ? "text-perejil-100 underline"
+                  ? "text-black dark:text-white underline"
                   : "hover:text-perejil-100 transition-colors"
               }
             >
@@ -46,7 +46,7 @@ export default function NavBar() {
               to="/contacto"
               className={({ isActive }) =>
                 isActive
-                  ? "text-perejil-100 underline"
+                  ? "text-black dark:text-white underline"
                   : "hover:text-perejil-100 transition-colors"
               }
             >

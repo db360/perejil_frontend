@@ -67,14 +67,16 @@ export default function ContactForm() {
 
   return (
 
-    <section className="w-[40%] mt-12 bg-perejil-400 rounded-xl shadow-lg overflow-hidden">
+    <section className="w-[90%] lg:w-[50%] mt-12 bg-perejil-400 dark:bg-perejil-700 rounded-xl shadow-lg overflow-hidden transition-colors duration-300">
       <div className="px-8 py-10">
-
+        <h2 className="text-2xl font-bold text-white dark:text-gray-200 mb-6 text-center">
+          Contacto
+        </h2>
         <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="nombre"
-              className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200"
+              className="block mb-2 text-sm font-semibold text-white dark:text-gray-200"
             >
               Nombre
             </label>
@@ -82,7 +84,7 @@ export default function ContactForm() {
               type="text"
               id="nombre"
               name="nombre"
-              className="w-full px-4 py-2 border border-perejil-100 rounded-lg focus:ring-1 focus:ring-perejil-200 focus:border-perejil-200 bg-perejil-200 text-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-bluemaria-500 dark:focus:ring-bluemaria-400 bg-perejil-200 dark:bg-perejil-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Tu nombre completo"
               required
             />
@@ -98,7 +100,7 @@ export default function ContactForm() {
               type="email"
               id="email"
               name="email"
-              className="w-full px-4 py-2 bg-perejil-200 border border-perejil-100 rounded-lg focus:ring-2 focus:ring-perejil-200 focus:border-perejil-200 dark:text-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-bluemaria-500 dark:focus:ring-bluemaria-400 bg-perejil-200 dark:bg-perejil-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="tu@email.com"
               required
             />
@@ -106,7 +108,7 @@ export default function ContactForm() {
           <div>
             <label
               htmlFor="subject"
-              className="block mb-2 text-sm font-semibold text-white"
+              className="block mb-2 text-sm font-semibold text-white dark:text-gray-200"
             >
               Asunto
             </label>
@@ -114,7 +116,7 @@ export default function ContactForm() {
               type="text"
               id="subject"
               name="subject"
-              className="w-full px-4 py-2 bg-perejil-200 border border-gray-300 rounded-lg focus:ring-1 focus:ring-perejil-200 focus:border-perejil-200 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-bluemaria-500 dark:focus:ring-bluemaria-400 bg-perejil-200 dark:bg-perejil-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Asunto del mensaje"
               required
             />
@@ -122,7 +124,7 @@ export default function ContactForm() {
           <div>
             <label
               htmlFor="message"
-              className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200"
+              className="block mb-2 text-sm font-semibold text-white dark:text-gray-200"
             >
               Mensaje
             </label>
@@ -130,7 +132,7 @@ export default function ContactForm() {
               id="message"
               name="message"
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-perejil-200 focus:border-perejil-200  bg-perejil-200 text-white"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-bluemaria-500 dark:focus:ring-bluemaria-400 bg-perejil-200 dark:bg-perejil-500 text-gray-900 dark:text-gray-100 resize-none placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Escribe tu mensaje aquí..."
               required
             ></textarea>
@@ -140,11 +142,11 @@ export default function ContactForm() {
               id="privacy"
               type="checkbox"
               required
-              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-2 focus:ring-bluemaria-500 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded bg-perejil-200 dark:bg-perejil-600 focus:ring-2 focus:ring-bluemaria-500 dark:focus:ring-bluemaria-400 text-bluemaria-600"
             />
             <label
               htmlFor="privacy"
-              className="ml-2 text-sm text-white"
+              className="ml-2 text-sm text-white dark:text-gray-200"
             >
               Acepto la política de privacidad
             </label>
@@ -154,7 +156,7 @@ export default function ContactForm() {
             whileTap={{ scale: 0.95, border: "none" }}
             type="submit"
             disabled={loading}
-            className={`w-1/2 flex m-auto justify-center items-center py-2 px-4 bg-perejil-100 hover:bg-bluemaria-500 text-white font-semibold rounded-lg focus:outline-none focus:ring-bluemaria-500 focus:ring-offset-2 hover:cursor-pointer dark:bg-bluemaria-600  ${
+            className={`w-1/2 flex m-auto justify-center items-center py-2 px-4 bg-perejil-600 dark:bg-perejil-500 hover:bg-perejil-700 dark:hover:bg-perejil-800 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-perejil-500 focus:ring-offset-2 hover:cursor-pointer transition-all duration-300 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -163,10 +165,10 @@ export default function ContactForm() {
         </form>
         {notification && (
           <div
-            className={`mt-4 z-50 p-3 rounded shadow-lg ${
+            className={`mt-4 z-50 p-3 rounded shadow-lg transition-colors duration-300 ${
               notification.type === "success"
-                ? "bg-green-50 text-green-800 border border-green-200"
-                : "bg-red-50 text-red-800 border border-red-200"
+                ? "bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-700"
+                : "bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-700"
             }`}
           >
             {notification.message}

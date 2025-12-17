@@ -47,7 +47,7 @@ export default function Gallery({
   };
 
   return (
-    <div className="relative w-full h-[500px] flex items-center justify-center overflow-hidden z-50 mb-35">
+    <div className="relative w-full h-[600px] flex items-center justify-center overflow-hidden z-40 mb-10">
       {/* Contenedor de la imagen con AnimatePresence */}
       <AnimatePresence initial={false} custom={direction}>
         <motion.img

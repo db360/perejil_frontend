@@ -14,12 +14,23 @@ export default function MenuModal({
   selectedProduct,
   onClose,
 }: MenuModalProps) {
-  console.log(selectedProduct?.precio);
+  console.log(selectedProduct?.alergenos);
+
+  // Función para normalizar texto (quitar tildes y caracteres especiales)
+  const normalizeText = (text: string): string => {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Quitar tildes y diacríticos
+      .toLowerCase()
+      .replace(/\s+/g, '_') // Reemplazar espacios con guiones bajos
+      .replace(/[^a-z0-9_]/g, ''); // Quitar cualquier carácter especial
+  };
 
   const backdrop = {
     visible: { opacity: 1 },
     hidden: { opacity: 0 },
   };
+
 
   const variants = {
     visible: {
@@ -140,6 +151,7 @@ export default function MenuModal({
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
               </motion.button>
+
             </div>
 
             {/* Contenido del modal */}
@@ -193,9 +205,51 @@ export default function MenuModal({
                   </p>
                 </div>
               )}
-            </div>
+
+              {/* Alérgenos */}
+              {selectedProduct.alergenos && selectedProduct.alergenos.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Alérgenos:</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProduct.alergenos.map((alergeno) => {
+                      const normalizedName = normalizeText(alergeno.nombre);
+                      const imageUrl = `/img/alergenos/${String(alergeno.numero).padStart(2, '0')}_${normalizedName}.png`;
+
+                      return (
+                        <div
+                          key={alergeno.numero}
+                          className="flex flex-col items-center p-2 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700 transition-colors duration-300"
+                          title={alergeno.nombre}
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={alergeno.nombre}
+                            className="w-8 h-8 mb-1"
+                            onError={(e) => {
+                              // Fallback: ocultar imagen y mostrar texto
+                              const imgElement = e.currentTarget;
+                              const container = imgElement.parentElement;
+                              imgElement.style.display = 'none';
+
+                              // Crear elemento de texto si no existe
+                              if (container && !container.querySelector('.fallback-text')) {
+                                const textElement = document.createElement('span');
+                                textElement.className = 'fallback-text text-xs text-gray-700 dark:text-gray-300 text-center font-medium';
+                                textElement.textContent = alergeno.nombre;
+                                container.insertBefore(textElement, container.lastElementChild);
+                              }
+                            }}
+                          />
+
+                        </div>
+                      );
+                    })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
       )}
     </AnimatePresence>
   );

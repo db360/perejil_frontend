@@ -106,7 +106,7 @@ export default function AccessibilityButton() {
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 bg-perejil-500 text-white rounded-full shadow-lg hover:bg-perejil-700 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors hover:cursor-pointer"
-          aria-label="Opciones de accesibilidad"
+          aria-label="Opciones de accesibilidad z-50"
           aria-expanded={isOpen}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -123,7 +123,7 @@ export default function AccessibilityButton() {
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
-              className="absolute right-0 bottom-full mb-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-64"
+              className="absolute right-80 2xl:right-10 bottom-2 mb-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-64"
             >
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Opciones de Accesibilidad
@@ -135,7 +135,7 @@ export default function AccessibilityButton() {
                   <label className="text-sm font-medium text-gray-700">
                     Alto Contraste
                   </label>
-                  
+
                   <button
                     type="button"
                     onClick={toggleContrast}

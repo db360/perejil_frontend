@@ -11,7 +11,7 @@ export default function LoadingAnim({ loading = false }: { loading: boolean }) {
               initial={{ filter: "blur(0px)" }}
               animate={{ filter: "blur(5px)" }}
               transition={{ ease: "easeIn", duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
-              className="uppercase font-bold text-2xl text-center"
+              className="uppercase font-bold text-2xl text-center text-perejil-600 dark:text-white"
             >
               Cargando...
             </motion.p>

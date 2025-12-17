@@ -3,8 +3,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import LoadingAnim from "./ui/LoadingAnim";
 import { useSEO } from "../hooks/useSeo";
-import { stripHtmlTags } from "../lib/utils";
 import Gallery from "./ui/Gallery";
+import GoogleReviews from "./ui/GoogleReviews";
 
 export default function Home() {
   const { data, loading, error } = usePagesByslug("index");
@@ -18,12 +18,12 @@ export default function Home() {
     description: data?.seoDescription,
     yoastData: data?.yoast_head_json,
     featuredImage: data?.mediaUrl,
-    pageType: 'website'
+    pageType: "website",
   });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
   // 🎬 Transformar el progreso - el video DESAPARECE hacia el final
@@ -47,16 +47,16 @@ export default function Home() {
           className="fixed top-0 right-0 w-1/2 h-screen bg-[url('/img/background.png')] bg-cover bg-center bg-repeat z-0 opacity-40"
         />
 
-        <div className="relative h-[250vh] flex flex-col items-center justify-start pt-32 text-center z-10">
+        <motion.div className="relative h-[250vh] flex flex-col items-center justify-start pt-32 text-center z-10">
           <div className="top-20">
-            <motion.h1
+            <motion.img
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: loading ? 0 : 1, y: loading ? 50 : 0 }}
-              transition={{ duration: 1 }}
-              className="font-bold text-8xl text-white drop-shadow-2xl"
-            >
-              {stripHtmlTags(data?.title?.rendered || "")}
-            </motion.h1>
+              transition={{ duration: 1, delay: 0.5 }}
+              src="/img/logoPerejil.png"
+              alt=""
+            />
+
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: loading ? 0 : 1, y: loading ? 50 : 0 }}
@@ -66,7 +66,7 @@ export default function Home() {
               {data?.textContent}
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {videoHero && (
           <motion.video
@@ -79,8 +79,11 @@ export default function Home() {
           />
         )}
       </div>
+      <section className="h-full w-2/3 mx-auto">
+        <Gallery images={data?.galleryImages} />
+      </section>
       <section>
-        <Gallery images={data?.galleryImages}/>
+        <GoogleReviews />
       </section>
     </>
   );
